@@ -1,0 +1,64 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: #F5F7FB;
+}
+
+/* App */
+
+.main-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Start.js component */
+
+.quiz-title {
+  font-family: 'Karla';
+  font-weight: 700;
+  font-size: 2em;
+  text-align: center;
+  color: #293264;
+  margin: 0;
+}
+
+.description {
+  font-family: 'Inter';
+  font-weight: 400;
+  font-size: 1em;
+  text-align: center;
+  color: #293264;
+  margin-bottom: 2rem;
+}
+
+.start-btn {
+  width: 193px;
+  height: 52px;
+  background: #4D5B9E;
+  text-align: center;
+  border-radius: 15px;
+  margin: auto;
+  font-family: 'Inter';
+  font-weight: 500;
+  font-size: 1em;
+  text-align: center;
+  color: #F5F7FB;
+}
+
+.start-container {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: cenetr;
+  margin: auto;
+}
