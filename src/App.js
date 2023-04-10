@@ -1,33 +1,40 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
 import Start from "./components/Start"
-import Question from './components/Questions';
+import Question from './components/Question';
 
 
 function App() {
-  const [questions, setQuestions] = useState()
+  const [questionData, setQuestionData] = useState([])
+  const [counter, setCounter] = useState(0)
 
 
-  React.useEffect(() => {
+  useEffect(() => {
+    console.log("useEffect")
     fetch("https://opentdb.com/api.php?amount=5&difficulty=medium&type=multiple")
       .then(res => res.json())
       .then(data => {
-        console.log(data)
-        setQuestions(data.results[0])
+        setQuestionData(data.results)
       }
       )
-  }, [])
+  }, [counter])
 
 
+  const questionsComponent = questionData.map(question => {
+    return (
+      <Question questionData={question} />
+    )
+  });
 
   const newGame = () => {
-
+    setCounter(prevCounter => prevCounter + 1)
   }
+
 
   return (
     <div className="main-container">
       <Start />
-      <Question questions={questions} />
+      {questionData && questionsComponent}
       <button
         className="start-btn"
         onClick={newGame}
