@@ -95,3 +95,7 @@ body {
   border-radius: 8px;
   padding: 0.2em 1em;
 }
+
+.selectedAnswer {
+  background-color: #D6DBF5;
+}

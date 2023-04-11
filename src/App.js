@@ -5,30 +5,33 @@ import Question from './components/Question';
 
 
 function App() {
-  const [questionData, setQuestionData] = useState([])
-  const [counter, setCounter] = useState(0)
+  const [questionsData, setQuestionsData] = useState([])
+  const [isGameStarted, setGameStarted] = useState(false)
 
 
   useEffect(() => {
     console.log("useEffect")
-    fetch("https://opentdb.com/api.php?amount=5&difficulty=medium&type=multiple")
-      .then(res => res.json())
-      .then(data => {
-        const transformedData = transformData(data.results)
-        console.log(transformedData)
-        setQuestionData(transformedData)
-      }
-      )
-  }, [counter])
+    if (isGameStarted) {
+      console.log("fetch data")
+      fetch("https://opentdb.com/api.php?amount=5&difficulty=medium&type=multiple")
+        .then(res => res.json())
+        .then(data => {
+          const transformedData = transformData(data.results)
+          setQuestionsData(transformedData)
+        }
+        )
+    }
+  }, [isGameStarted])
 
   const transformData = (data) => {
-    return data.map(el => {
+    return data.map((el, index) => {
 
       const arrayOfAnswers = el.incorrect_answers
       arrayOfAnswers.push(el.correct_answer)
       arrayOfAnswers.sort();
 
       return {
+        id: index,
         question: el.question,
         answers: arrayOfAnswers,
         correctAnswer: el.correct_answer,
@@ -36,23 +39,21 @@ function App() {
       }
     })
   }
-
-
-  const questionsComponent = questionData.map(question => {
+  const questionsComponent = questionsData.map(question => {
     return (
-      <Question key={question.question} questionData={question} />
+      <Question key={question.question} question={question} setQuestionsData={setQuestionsData} />
     )
   });
-
   const newGame = () => {
-    setCounter(prevCounter => prevCounter + 1)
+    console.log("new game")
+    setGameStarted(true)
   }
 
 
   return (
     <div className="main-container">
       <Start />
-      {questionData && questionsComponent}
+      {questionsData && questionsComponent}
       <button
         className="start-btn"
         onClick={newGame}
