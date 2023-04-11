@@ -14,15 +14,33 @@ function App() {
     fetch("https://opentdb.com/api.php?amount=5&difficulty=medium&type=multiple")
       .then(res => res.json())
       .then(data => {
-        setQuestionData(data.results)
+        const transformedData = transformData(data.results)
+        console.log(transformedData)
+        setQuestionData(transformedData)
       }
       )
   }, [counter])
 
+  const transformData = (data) => {
+    return data.map(el => {
+
+      const arrayOfAnswers = el.incorrect_answers
+      arrayOfAnswers.push(el.correct_answer)
+      arrayOfAnswers.sort();
+
+      return {
+        question: el.question,
+        answers: arrayOfAnswers,
+        correctAnswer: el.correct_answer,
+        selectedAnswer: ""
+      }
+    })
+  }
+
 
   const questionsComponent = questionData.map(question => {
     return (
-      <Question questionData={question} />
+      <Question key={question.question} questionData={question} />
     )
   });
 
