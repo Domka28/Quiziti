@@ -3,14 +3,12 @@ import React, { useEffect, useState } from 'react';
 import Start from "./components/Start"
 import Question from './components/Question';
 
-
 function App() {
   const [questionsData, setQuestionsData] = useState([])
   const [isGameStarted, setGameStarted] = useState(false)
-
+  const [isCheckAnswer, setCheckAnswer] = useState(false)
 
   useEffect(() => {
-    console.log("useEffect")
     if (isGameStarted) {
       console.log("fetch data")
       fetch("https://opentdb.com/api.php?amount=5&difficulty=medium&type=multiple")
@@ -41,24 +39,41 @@ function App() {
   }
   const questionsComponent = questionsData.map(question => {
     return (
-      <Question key={question.question} question={question} setQuestionsData={setQuestionsData} />
+      <Question key={question.question} checkAnswer={isCheckAnswer} question={question} setQuestionsData={setQuestionsData} />
     )
   });
   const newGame = () => {
-    console.log("new game")
     setGameStarted(true)
   }
-
+  const checkAnswers = () => {
+    setCheckAnswer(true)
+  }
+  const playAgain = () => {
+    console.log("play")
+  }
 
   return (
     <div className="main-container">
       <Start />
       {questionsData && questionsComponent}
-      <button
+      {!isGameStarted && <button
         className="start-btn"
         onClick={newGame}
-      >Start quiz</button>
-    </div>
+      >Start quiz
+      </button>}
+      {isGameStarted && !isCheckAnswer && < button
+        className="check-btn"
+        onClick={checkAnswers}
+      >Check answers
+      </button>}
+      {
+        isCheckAnswer && <button
+          className="play-btn"
+          onClick={playAgain}
+        >Play again
+        </button>
+      }
+    </div >
 
   );
 }

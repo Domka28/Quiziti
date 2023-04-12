@@ -1,8 +1,7 @@
 import React from 'react';
 
-
 export default function Question(props) {
-    const { question, setQuestionsData } = props
+    const { question, setQuestionsData, isCheckAnswer } = props
     const { answers } = question
 
     function selectAnswer(answer, id) {
@@ -18,11 +17,11 @@ export default function Question(props) {
             return newQuestionsData
         })
     }
-
-
     function getClass(answer) {
         if (answer === question.selectedAnswer) {
             return "answer selectedAnswer"
+        } else if (isCheckAnswer && answer === question.checkanswer) {
+            return "answer correctAnswer"
         } else {
             return "answer"
         }
@@ -43,3 +42,8 @@ export default function Question(props) {
         </div>
     )
 }
+
+
+// Zrobiłam onClick dla każdego z przycisków i później chciałam dla checkAnswers zrobić state, żeby po kliknięciu w
+// przycisk, żeby zmienił się w true i wysyłam go w propsach to question i chciałam w zależności tego, czy jest true
+// żeby wyświetlić zmianę background ale nie działą xd 
