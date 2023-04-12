@@ -11,7 +11,7 @@ function App() {
 
   useEffect(() => {
     if (isGameStarted) {
-      fetch("https://opentdb.com/api.php?amount=5&difficulty=medium&type=multiple")
+      fetch("https://opentdb.com/api.php?amount=5&category=9&difficulty=easy&type=multiple")
         .then(res => res.json())
         .then(data => {
           const transformedData = transformData(data.results)
@@ -22,6 +22,11 @@ function App() {
     }
   }, [isGameStarted, newQuiz])
 
+  function decode(string) {
+    return string.replaceAll('&quot;', '"').replaceAll("&#039;", "'").replaceAll("&ldquo;", "“").replaceAll("&rsquo;", "’").replaceAll("&amp;", "&").replaceAll("&oacute;", "ó").replaceAll("&rdquo;", "”").replaceAll("&hellip;", "…")
+  }
+
+
   const transformData = (data) => {
     return data.map((el, index) => {
 
@@ -29,10 +34,12 @@ function App() {
       arrayOfAnswers.push(el.correct_answer)
       arrayOfAnswers.sort();
 
+      const fixedArray = arrayOfAnswers.map(el => decode(el))
+
       return {
         id: index,
-        question: el.question,
-        answers: arrayOfAnswers,
+        question: decode(el.question),
+        answers: fixedArray,
         correctAnswer: el.correct_answer,
         selectedAnswer: ""
       }
@@ -75,7 +82,6 @@ function App() {
     <div className="main-container">
       {!isGameStarted && <Start />}
       {questionsData && questionsComponent}
-      {isCheckAnswer && <p className="summary">You scored {scoredCorrectAnswers()}/5 correct answers</p>}
       {!isGameStarted && <button
         className="start-btn"
         onClick={newGame}
@@ -86,12 +92,14 @@ function App() {
         onClick={checkAnswers}
       >Check answers
       </button>}
-      {isCheckAnswer && <button
-        className="play-btn"
-        onClick={playAgain}
-      >Play again
-      </button>
-      }
+      <div className="summary-container"> {isCheckAnswer && <p className="summary">You scored {scoredCorrectAnswers()}/5 correct answers</p>}
+        {isCheckAnswer && <button
+          className="play-btn"
+          onClick={playAgain}
+        >Play again
+        </button>
+        }
+      </div>
     </div >
 
   );
