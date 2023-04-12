@@ -7,19 +7,20 @@ function App() {
   const [questionsData, setQuestionsData] = useState([])
   const [isGameStarted, setGameStarted] = useState(false)
   const [isCheckAnswer, setCheckAnswer] = useState(false)
+  const [newQuiz, setNewQuiz] = useState(0)
 
   useEffect(() => {
     if (isGameStarted) {
-      console.log("fetch data")
       fetch("https://opentdb.com/api.php?amount=5&difficulty=medium&type=multiple")
         .then(res => res.json())
         .then(data => {
           const transformedData = transformData(data.results)
           setQuestionsData(transformedData)
+          setCheckAnswer(false)
         }
         )
     }
-  }, [isGameStarted])
+  }, [isGameStarted, newQuiz])
 
   const transformData = (data) => {
     return data.map((el, index) => {
@@ -37,9 +38,27 @@ function App() {
       }
     })
   }
+
+  function scoredCorrectAnswers() {
+    let counter = 0;
+    for (let question of questionsData) {
+      if (question.selectedAnswer == question.correctAnswer) {
+        counter++
+      }
+    }
+    return counter
+  }
+
+  function areAllAnswerSelected() {
+    const selectedAns = questionsData.length > 0 && questionsData.every(element => element.selectedAnswer !== "")
+    return selectedAns
+
+  }
+
+
   const questionsComponent = questionsData.map(question => {
     return (
-      <Question key={question.question} checkAnswer={isCheckAnswer} question={question} setQuestionsData={setQuestionsData} />
+      <Question key={question.question} isCheckAnswer={isCheckAnswer} question={question} setQuestionsData={setQuestionsData} />
     )
   });
   const newGame = () => {
@@ -49,29 +68,29 @@ function App() {
     setCheckAnswer(true)
   }
   const playAgain = () => {
-    console.log("play")
+    setNewQuiz(newQuiz + 1)
   }
 
   return (
     <div className="main-container">
-      <Start />
+      {!isGameStarted && <Start />}
       {questionsData && questionsComponent}
+      {isCheckAnswer && <p className="summary">You scored {scoredCorrectAnswers()}/5 correct answers</p>}
       {!isGameStarted && <button
         className="start-btn"
         onClick={newGame}
       >Start quiz
       </button>}
-      {isGameStarted && !isCheckAnswer && < button
+      {!isCheckAnswer && areAllAnswerSelected() && < button
         className="check-btn"
         onClick={checkAnswers}
       >Check answers
       </button>}
-      {
-        isCheckAnswer && <button
-          className="play-btn"
-          onClick={playAgain}
-        >Play again
-        </button>
+      {isCheckAnswer && <button
+        className="play-btn"
+        onClick={playAgain}
+      >Play again
+      </button>
       }
     </div >
 
